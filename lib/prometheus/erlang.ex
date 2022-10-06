@@ -13,6 +13,12 @@ defmodule Prometheus.Erlang do
       import unquote(__MODULE__)
     end
   end
+  
+  if Version.match?(System.version(), "< 1.14.0-rc.0") do
+    def defdelegate_each(fun, opts), do: Kernel.Utils.defdelegate(fun, opts)
+  else
+    def defdelegate_each(fun, opts), do: Kernel.Utils.defdelegate_each(fun, opts)
+  end
 
   defmacro delegate(fun, opts \\ []) do
     fun = Macro.escape(fun, unquote: true)
